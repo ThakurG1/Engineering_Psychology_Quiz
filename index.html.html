@@ -1,0 +1,170 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Engineering Psychology Academy</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--tx:#1b2238;--mu:#64708c;--ac:#4f46e5;--ok:#16a34a;--bad:#dc2626;--bd:#e2e6f0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1424;--card:#192037;--tx:#e8ecf8;--mu:#97a2c0;--ac:#818cf8;--bd:#2a3354}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,Segoe UI,sans-serif}
+.w{max-width:960px;margin:auto;padding:16px}h1,h2,h3{margin:.3em 0}.mu{color:var(--mu)}
+header{display:flex;justify-content:space-between;align-items:center}header h1{font-size:1.3rem}header small{display:block;color:var(--mu)}
+.hero{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border-radius:16px;padding:28px;margin:16px 0}.hero p{opacity:.9}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:10px 16px;font:inherit;cursor:pointer;margin:4px 4px 4px 0}.btn.g{background:var(--card);color:var(--tx);border:1px solid var(--bd)}.hero .btn.g{background:#fff;color:#4f46e5}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.c{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px}
+.big{font-size:1.8rem;font-weight:700}.bar{height:8px;background:var(--bd);border-radius:9px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--ac)}
+.mod{cursor:pointer}.mod:hover{border-color:var(--ac)}.sec{display:none}.sec.on{display:block}
+label.o{display:block;border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin:8px 0;cursor:pointer;background:var(--card)}
+.o.sel{border-color:var(--ac)}.o.ok{border-color:var(--ok);background:rgba(22,163,74,.12)}.o.no{border-color:var(--bad);background:rgba(220,38,38,.12)}
+select,input[type=text]{font:inherit;padding:8px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);width:100%}
+.chips span{display:inline-block;margin:3px;padding:5px 10px;border:1px solid var(--bd);border-radius:99px;cursor:pointer;background:var(--card)}.chips span.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.tag{font-size:.75rem;background:var(--ac);color:#fff;border-radius:6px;padding:2px 8px}
+.fc{min-height:180px;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;font-size:1.15rem;padding:24px}
+.sc{font-size:3rem;font-weight:800;color:var(--ac)}.good{color:var(--ok)}.bad{color:var(--bad)}.aud{border-left:4px solid var(--bd);padding:8px 12px;margin:8px 0;background:var(--card);border-radius:8px}
+</style></head><body><div class="w">
+<header><div><h1>Engineering Psychology Academy</h1><small>NPTEL · IIT Guwahati · Human Factors</small></div><div><button class="btn g" onclick="show('home')">Home</button><button class="btn g" onclick="show('srch')">Search</button><button class="btn g" onclick="bm()">★ <span id="nb">0</span></button></div></header>
+
+<div id="home" class="sec on">
+<div class="hero"><h2>Challenge Yourself Across 8 Essential Weeks</h2><p>Human factors, research methods, perception, displays, memory &amp; attention, decision making, controls, environment and human error. Based on the Weeks 1–8 NPTEL assignment solutions.</p><button class="btn g" onclick="start(ALL(),'exam',true)">Take Comprehensive Exam</button><button class="btn g" onclick="document.getElementById('cfg').scrollIntoView({behavior:'smooth'})">Custom Study Session</button></div>
+<div class="grid"><div class="c"><div class="mu">Overall Progress</div><div class="big" id="sp">0%</div><div class="bar"><i id="spb" style="width:0"></i></div></div>
+<div class="c"><div class="mu">Questions Attempted</div><div class="big" id="sa">0/80</div></div>
+<div class="c"><div class="mu">Average Score</div><div class="big" id="ss">0%</div></div>
+<div class="c mod" onclick="bm()"><div class="mu">Saves &amp; Bookmarks</div><div class="big" id="sb">0</div></div></div>
+<h3 style="margin-top:22px">Module-wise Interactive Units</h3><div class="grid" id="mods"></div>
+<div class="c" id="cfg" style="margin-top:22px"><h3>Custom Practice Session Configurator</h3>
+<div class="mu">Select Weeks / Modules · <a href="#" onclick="allw(1);return false">Select All</a> | <a href="#" onclick="allw(0);return false">Deselect All</a></div><div class="chips" id="chips"></div>
+<div class="grid" style="margin-top:10px"><div>Study Mode<select id="mode"><option value="practice">Practice Mode (instant explanations)</option><option value="exam">Exam Mode (graded at end, timed)</option></select></div>
+<div>Max Questions<select id="lim"><option>10</option><option>20</option><option>50</option><option value="999">All available</option></select></div>
+<div><br><label><input type="checkbox" id="shuf" checked> Shuffle questions</label></div></div>
+<button class="btn" onclick="launch()">Launch Custom Session</button><button class="btn g" onclick="cards()">Flashcards</button></div></div>
+
+<div id="quiz" class="sec"><div class="row"><b>Quiz Progress</b><b id="tm">00:00</b><span id="att" class="mu"></span><button class="btn" onclick="ask()">Submit Assessment</button></div><div class="bar"><i id="qb" style="width:0"></i></div>
+<div class="c" style="margin-top:12px"><div class="row"><span class="tag" id="qw"></span><button class="btn g" onclick="tb()" id="qs">☆ Save</button></div><h3 id="qt"></h3><div id="qo"></div><div id="ex" class="mu" style="display:none"></div></div>
+<div class="row"><button class="btn g" onclick="mv(-1)">Previous</button><span id="qn"></span><button class="btn g" onclick="mv(1)">Next</button></div>
+<div id="dlg" class="c sec" style="margin-top:12px"><h3>Complete Graded Run?</h3><p id="dp"></p><button class="btn g" onclick="dlg.classList.remove('on')">Continue Assessment</button><button class="btn" onclick="finish()">Submit &amp; Grade</button></div></div>
+
+<div id="res" class="sec"><h2>Performance Scorecard</h2><div class="c"><div class="sc" id="rp"></div><div id="rt"></div></div><button class="btn" onclick="show('home')">Return to Dashboard</button><button class="btn g" onclick="start(cur.qs,cur.mode,false)">Retake Quiz Session</button><h3>Step-by-Step Question Audit</h3><div id="aud"></div></div>
+
+<div id="srch" class="sec"><h2>Search All 80 Questions</h2><input type="text" id="sq" placeholder='Try "Fitts", "WBGT", "fault tree", "anchoring"…' oninput="sr()"><div id="sl"></div></div>
+<div id="fcs" class="sec"><h2>Active Recall Flashcards</h2><div class="mu">Click card to reveal the correct answer</div><div class="c fc" id="fc" onclick="flip()"></div><div class="row"><button class="btn g" onclick="fm(-1)">Previous</button><span id="fn"></span><button class="btn g" onclick="fm(1)">Next</button></div></div>
+</div>
+<script>
+const WK=["Intro to Human Factors","Research Methods","Sensation & Displays","Auditory & HF Methods","Memory, Attention & Decisions","Controls & Movement","Environment & Heat","Human Error"];
+// [week, question, [options], correctIndex]
+const D=[
+[1,"The purpose of human factors is to",["Design environments that fit the limitations and capabilities of the user","Develop environments that limit human function","Increase individuals' personal capabilities","Train individuals to monitor computers"],0],
+[1,"Human factors is",["Aimed at taking advantage of limitations","Applying limits to human behavior","Applying knowledge of the limits of behavior","Improving efficiency by limiting behavior"],2],
+[1,"Problems encountered by systems include",["Goal identification and development","Goal identification and system development","Goal and system development","System development and analysis"],0],
+[1,"The impetus for the emergence of human factors as a discipline occurred",["After psychometricians created selection tests","As a result of Gilbreth's scaffold design","Due to practical needs, technology and linguistic developments during WWII","During Taylor's study of shovel size"],2],
+[1,"The beginning of human factors",["Can be traced to the Age of Tools when bones were used as scoops","Was established during WWI","Was established during WWII","Was not recognized by engineers"],0],
+[1,"During the Age of Power (1870–1945), breakthroughs included",["Designing the job to fit individuals","Gilbreth's tool design procedures","Better masonry materials and tools","Taylor's idea of scientific management"],3],
+[1,"Human factors emerged as a discipline due to",["Interest in testing human performance, sensation and perception near the end of WWII","Fitts' declaration that more memory/learning research was needed","Psychometricians' need for selection tests","Taylor's study of shovel size"],0],
+[1,"Your grandmother struggles with her iPad. A human factors view suggests",["She doesn't understand new technology","Her motor skills need physical therapy","She needs new glasses","Adjusting the display and icon layout would greatly help"],3],
+[1,"A human factors specialist",["Must have a PhD in psychology","Studies only ergonomics","Is an engineer","May come from many disciplines, incl. psychology, engineering, architecture"],3],
+[1,"A human factors specialist in education is most likely",["Creating continuing education courses","Designing curricula for HF programs","Developing computer-generated grading systems","Setting learning criteria for aviation psychology training"],2],
+[2,"Research methods",["Cover methods for theory development","Focus mainly on inferential statistics","Include methods of data collection and analysis","Must include experimentation"],2],
+[2,"Research that addresses real-world problems is",["Applied research","Basic research","Quasi-experimental research","A study"],0],
+[2,"Which best represents applied research?",["Impact of noise on irritability","Best lighting level for learning when studying on computers","Impact of screen brightness on legibility","Impact of office layout on mood"],1],
+[2,"Evaluating a situation without manipulating any variables is a(n)",["Basic study","Experiment","Quasi-experiment","Study"],3],
+[2,"Comparing engineering vs. arts & sciences students is a(n)",["Basic study","Experiment","Quasi-experiment","Study"],2],
+[2,"Which best describes a quasi-experiment?",["Students randomly assigned to conditions","Survey distributed to all workers","Exposing people to room colors and expecting differences by whether they live in north or south","Manipulating path layout complexity with random assignment"],2],
+[2,"Proposing that a loud, hot environment will lower performance is a",["Hypothesis","Parsimonious explanation","Replicable result","Theory"],0],
+[2,"The sample size you need will be",["Larger if the effect size is expected to be small","Larger if you achieve a strong power analysis","Smaller if the effect size is expected to be small","Smaller if you achieve a weak power analysis"],0],
+[2,"Hypothesizing older adults have slower reaction times is the",["Alternative hypothesis","Null hypothesis","Operationalized hypothesis","Parsimonious hypothesis"],0],
+[2,"Nonexperimental methods",["Include observation, interview and/or surveys","May use any sample available","Obtain causative data","Use simulation and manipulation of variables"],0],
+[3,"Stop and Yield signs are examples of",["Dynamic displays","Static displays","Visual alarms","Warning instructions"],1],
+[3,"Spacing between characters/lines and line length concern",["Conspicuity","Visibility","Legibility","Readability"],3],
+[3,"Symbols or pictographs are NOT recommended for",["Concrete objects or actions","Objects/actions needing no translation","Abstract concepts","Clearly identifiable referents"],2],
+[3,"To calculate visual angle you need to know",["Both distance from the observer and the object's width/height","Only its distance","Either height or width","None of the above"],0],
+[3,"Which displays suit monitoring trends or rates of change, not precise values?",["Analog","Digital","Static","Multidimensional"],0],
+[3,"The duplicity theory of vision states that",["The eye contains two functionally and anatomically distinct visual systems","Photoreceptor impulses are processed in the retina but we see with the brain","The eye has two types of cones","There are two types of rods"],0],
+[3,"Unlike proprioceptive cues, kinesthetic cues let you sense the ___ of your limbs",["Length","Orientation","Position","Movement"],3],
+[3,"The term haptics refers to",["Detection of static limb position","Detection of limb movement","Tactile pressure","Sum of tactile cues when we actively explore an object"],3],
+[3,"Design for color-limited users can use",["Larger text","Only red and green coding","Redundant cues such as brightness or position","Higher stimulus contrast"],2],
+[3,"As tone frequency goes from low to high, we perceive a change in",["Amplitude","Frequency","Duration","Pitch"],3],
+[4,"Auditory ___ is when a second sound makes detection of another more difficult",["Obstruction","Masking","Auditory suppression","Interference"],1],
+[4,"Relationship between sound amplitude and perceived intensity",["Low amplitudes: doubling gives large change; high: little change","Doubling gives doubling at all amplitudes","Little change in perception with amplitude","Low: doubling gives little change; high: small increases give large changes"],3],
+[4,"Localization based on the sound arriving first to each ear is the",["Precedence effect","Phase shift effect","Interaural intensity difference effect","Lagging sound effect"],0],
+[4,"One method to gather information about human interactions in systems",["Interviews","Literature reviews","Expert consultation","Reading a textbook"],0],
+[4,"All are types of interviews EXCEPT",["Structured","Semi-structured","Completely-structured","Unstructured"],2],
+[4,"\"I like cake and icing\" is a ___ statement",["Leading","Loaded","Double-barreled","Valid"],2],
+[4,"Two methods to evaluate ease of use of a software interface",["Task analysis and heuristic analysis","Contextual inquiry and user profile","Heuristic analysis and usability testing","Questionnaire and focus group"],2],
+[4,"Data collected in a usability study includes",["Objective data (time, success, steps)","Subjective data (difficulty, satisfaction)","User likes and dislikes","All of the above"],3],
+[4,"Sam shadows factory worker Emma, noting workflow, tasks, environment and interactions. This is a",["Usability study","Shadow box plot","Contextual inquiry","Task analysis"],2],
+[4,"Human error identification (HEI) finds potential errors at each task/subtask of a",["CTA","HTA","ETA","None of the above"],1],
+[5,"An exact but short-lived copy of sensory information is in the",["Sensory register","Working memory","Long-term memory","Short-term memory"],0],
+[5,"Information in the echoic register may persist for",["Half a second or less","4 to 9 seconds","1/4 to 4 seconds","Less than 10 milliseconds"],2],
+[5,"Verbal rehearsal allows information to be maintained indefinitely in",["Prospective memory","Metacognition","Long-term memory","Short-term memory"],3],
+[5,"Imagining chess piece placement engages the",["Articulatory control process","Visuo-spatial sketchpad","Central executive","Episodic buffer"],1],
+[5,"Drivers fixating on one object rely on ___ attention when they should be ___ attention",["Divided; selecting","Selective; dividing","Sustained; selecting","None of the above"],1],
+[5,"Bright lights and sirens on emergency vehicles use ___ to capture attention",["Effort","Expectancy","Saliency","Value"],2],
+[5,"One of the best predictors of crash rates is",["Visual acuity","Depth perception","Working memory","Selective and divided attention"],3],
+[5,"Which statement is correct?",["Decision errors are minor in EMS","Decision errors are causal in 30% of general aviation accidents","Decision errors play a minor role in weather-related accidents","Decision process is immune to training"],1],
+[5,"Sherlock Holmes is an example of",["Normative decision making","Naturalistic decision making","Descriptive decision making","All of the above"],0],
+[5,"Which normative model recognizes that outcome values are unique to individual goals?",["Multiattribute Utility Theory","Expected Value Theory","Subjective Expected Utility","Objective Expected Utility"],2],
+[6,"The anchoring effect is influenced by ___ and the ___",["Availability; confirmation bias","Satisficing; heuristics","Cue saliency; primacy effect","Biases; utility"],2],
+[6,"Medical adherence by older adults may be improved by",["Explicit instructions","External aids such as charts","Plastic medication organizers","All of the above"],3],
+[6,"A medical aid that confirms a doctor's diagnosis from symptoms and test results is a",["Expert system","Monitoring decision aid","Critiquing system","None of the above"],2],
+[6,"The time it takes to initiate a movement is",["Movement time","Decision time","Reaction time","Initiation time"],2],
+[6,"The time to complete a movement, beginning to end, is",["Reaction time","Response selection time","Decision time","Movement time"],3],
+[6,"According to Fitts' Law, which 2 factors determine pointing difficulty?",["Number and size of stimuli","Size of stimuli and movement distance","Movement distance and direction","Movement distance and stimulus intensity"],1],
+[6,"Feedback used to monitor and adjust a movement as it unfolds is",["Open-loop control","Feedforward control","Closed-loop control","Compensatory tracking"],2],
+[6,"Hand vs. foot controls differ in the ___ that operates them",["Sense","Effector","Person","Order of control"],1],
+[6,"___ controls can be set along a continuum; ___ controls only to a finite number of states",["Continuous; discrete","Discrete; continuous","Rotary; linear","Linear; rotary"],0],
+[6,"A sideways-mounted light switch where 'up' = 'on' is unclear violates",["Label coding","Location coding","Population stereotypes","Redundant coding"],2],
+[7,"Environmental design considers",["Noise, lighting, temperature, layout and air quality","Mainly layout and wayfinding","Lighting and air quality","Evaporation and heat exchange"],0],
+[7,"The temperature we experience, not just the thermometer reading, is",["Air temperature","Relative temperature","Effective temperature","Mean radiant temperature"],2],
+[7,"When measuring temperature,",["Air velocity affects air temperature","Effective temperature includes altitude","Mean radiant temperature is the average emitted over time","WBGT considers air temperature, radiant temperature and humidity"],3],
+[7,"To feel comfortable at high air temperature we need",["Higher humidity, greater air velocity","Higher humidity, lower air velocity","Lower humidity, greater air velocity","Lower humidity, lower air velocity"],2],
+[7,"Heat exchange between body and environment without touching is",["Conduction","Convection","Evaporation","Radiation"],3],
+[7,"One can become 'fully' acclimated to the cold within",["One or two days","One or two weeks","One or two months","Possibly never"],3],
+[7,"Heat stress appears to affect",["Cognition the least","Cognitive performance, especially at higher humidity","Only physical performance","Simple tasks more than complex ones"],1],
+[7,"Performance tends to be more greatly affected",["At moderate temperatures on vigilance tasks","On memory tasks when too hot","On perceptual tasks when too hot or cold","When performing in extreme temperatures"],3],
+[7,"Clothing",["Insulates more the thinner and less permeable","Adds one clo per layer","Provides insulation, measured in clo units","Should not allow heat exchange"],2],
+[7,"In the desert you get used to the heat but not the arid weather. You are",["Acclimating and acclimatizing","Acclimating, but still need to acclimatize","Acclimatizing, but still need to acclimate","Neither"],1],
+[8,"Human error is",["Action violating tolerance limits with little or no effect","Action violating tolerance limits with potential to affect system or people","Action that violates the people of the system","An undesirable effect"],1],
+[8,"Performing outside acceptable bounds for a system is known as",["Human error","Intentional error","Mechanical error","System error"],0],
+[8,"You press the right button hoping to change station but turn off the radio. This is a(n)",["Intentional error","Purposeful error","Omission error","Unintentional error"],0],
+[8,"Performing an action out of sequence is a(n)",["Commission error","Omission error","Unintentional error","Uncovered error"],0],
+[8,"Sarah absent-mindedly turned at the wrong intersection and realized immediately. This is a",["Knowledge-based error","Mistake","Rule-based error","Skill-based error"],3],
+[8,"By GEMS, after realizing he processed an order incorrectly Jim would",["Apply 'in the world' knowledge","Move into rule-based processing","Start knowledge-based processing","Use skill-based solutions"],1],
+[8,"The extent to which individuals are error free defines",["Human error limits","Human performance shaping factors","Human reliability","Human reliability analysis"],2],
+[8,"Starting from an incident and working backwards to the events leading to it is a",["Dynamic fault management system","Event tree","Fault tree","Performance shaping factor analysis"],2],
+[8,"Near misses are",["Accidents","Errors that do not cause accidents","Errors that lead to mistakes","The same as an accident"],1],
+[8,"Expertise, sleep deprivation and stress are examples of",["Cultural factors","Individual factors that can contribute to errors","Organizational structure","Systems factors"],1]
+].map((q,i)=>({id:i,w:q[0],q:q[1],o:q[2],a:q[3]}));
+const $=id=>document.getElementById(id),L="ABCD";
+const ALL=()=>D.slice();
+let S={att:{},bm:{}};try{S=JSON.parse(localStorage.getItem('epa')||'')||S}catch(e){}
+const sv=()=>{try{localStorage.setItem('epa',JSON.stringify(S))}catch(e){}};
+let sel=new Set(WK.map((_,i)=>i+1)),cur,ix=0,ans={},mode,tmr,t0,left,deck,di,shown=false;
+function show(id){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');if(id!='quiz')clearInterval(tmr);if(id=='home')dash();scrollTo(0,0)}
+function dash(){const n=Object.keys(S.att).length,c=Object.values(S.att).filter(x=>x).length;
+$('sp').textContent=Math.round(n/D.length*100)+'%';$('spb').style.width=n/D.length*100+'%';$('sa').textContent=n+'/'+D.length;$('ss').textContent=(n?Math.round(c/n*100):0)+'%';
+const b=Object.keys(S.bm).length;$('sb').textContent=b;$('nb').textContent=b;
+$('mods').innerHTML=WK.map((t,i)=>{const qs=D.filter(q=>q.w==i+1),d=qs.filter(q=>q.id in S.att).length;return `<div class="c mod" onclick="start(D.filter(q=>q.w==${i+1}),'practice',false)"><span class="tag">WEEK ${i+1}</span><h4 style="margin:8px 0 2px">${t}</h4><div class="mu">${d}/${qs.length} attempted</div><div class="bar"><i style="width:${d/qs.length*100}%"></i></div></div>`}).join('');
+$('chips').innerHTML=WK.map((t,i)=>`<span class="${sel.has(i+1)?'on':''}" onclick="tg(${i+1})">Week ${i+1}</span>`).join('')}
+function tg(w){sel.has(w)?sel.delete(w):sel.add(w);dash()}
+function allw(x){sel=new Set(x?WK.map((_,i)=>i+1):[]);dash()}
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function pool(){let p=D.filter(q=>sel.has(q.w));if($('shuf').checked)p=shuf(p);return p.slice(0,+$('lim').value)}
+function launch(){const p=pool();if(!p.length)return alert('Select at least one week.');start(p,$('mode').value,false)}
+function start(qs,m,sh){if(sh)qs=shuf(qs).slice(0,40);cur={qs,mode:m};mode=m;ix=0;ans={};t0=Date.now();left=qs.length*60;clearInterval(tmr);tmr=setInterval(tick,1000);tick();show('quiz');dlg.classList.remove('on');draw()}
+const f=s=>String(s/60|0).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+function tick(){if(mode=='exam'){left--;$('tm').textContent='⏳ '+f(Math.max(left,0));if(left<=0)finish()}else $('tm').textContent=f((Date.now()-t0)/1000|0)}
+function draw(){const q=cur.qs[ix],a=ans[q.id],done=mode=='practice'&&a!==undefined;
+$('qw').textContent='WEEK '+q.w;$('qt').textContent=q.q;$('qn').textContent=`Question ${ix+1} of ${cur.qs.length}`;
+$('att').textContent=`Attempted ${Object.keys(ans).length}/${cur.qs.length}`;$('qb').style.width=Object.keys(ans).length/cur.qs.length*100+'%';
+$('qs').textContent=S.bm[q.id]?'★ Saved':'☆ Save';
+$('qo').innerHTML=q.o.map((o,i)=>{let c='';if(done)c=i==q.a?'ok':i==a?'no':'';else if(a===i)c='sel';return `<label class="o ${c}" onclick="pick(${i})"><b>${L[i]}.</b> ${o}</label>`}).join('');
+const e=$('ex');e.style.display=done?'block':'none';e.innerHTML=done?`<b>Explanatory Intel:</b> Correct answer is <b>${L[q.a]}</b> — ${q.o[q.a]}. Topic: ${WK[q.w-1]}.`:''}
+function pick(i){const q=cur.qs[ix];if(mode=='practice'&&ans[q.id]!==undefined)return;ans[q.id]=i;if(mode=='practice'){S.att[q.id]=i==q.a?1:0;sv()}draw()}
+function mv(d){ix=Math.min(cur.qs.length-1,Math.max(0,ix+d));draw()}
+function tb(){const q=cur.qs[ix];S.bm[q.id]?delete S.bm[q.id]:S.bm[q.id]=1;sv();draw();$('nb').textContent=Object.keys(S.bm).length}
+function bm(){const b=D.filter(q=>S.bm[q.id]);if(!b.length)return alert('No bookmarks yet. Use ☆ Save while answering.');start(b,'practice',false)}
+function ask(){const n=Object.keys(ans).length;$('dp').textContent=`You have answered ${n} out of ${cur.qs.length} questions. Are you ready to grade?`;dlg.classList.add('on')}
+function finish(){clearInterval(tmr);let c=0;cur.qs.forEach(q=>{if(ans[q.id]!==undefined){if(mode=='exam')S.att[q.id]=ans[q.id]==q.a?1:0}if(ans[q.id]==q.a)c++});sv();
+$('rp').textContent=Math.round(c/cur.qs.length*100)+'%';$('rt').textContent=`Correctly answered ${c} out of ${cur.qs.length} questions. Time taken: ${f((Date.now()-t0)/1000|0)}`;
+$('aud').innerHTML=cur.qs.map((q,i)=>{const a=ans[q.id],ok=a==q.a;return `<div class="aud" style="border-color:var(--${ok?'ok':'bad'})"><b>${i+1}. ${q.q}</b><br><span class="${ok?'good':'bad'}">Your answer: ${a===undefined?'—':L[a]+'. '+q.o[a]}</span>${ok?'':`<br><span class="good">Correct: ${L[q.a]}. ${q.o[q.a]}</span>`}</div>`}).join('');show('res')}
+function sr(){const k=$('sq').value.toLowerCase().trim();$('sl').innerHTML=D.filter(q=>!k||(q.q+q.o.join(' ')+' week '+q.w+WK[q.w-1]).toLowerCase().includes(k)).map(q=>`<div class="c" style="margin:8px 0"><span class="tag">WEEK ${q.w}</span> <b>${q.q}</b><div class="good">✔ ${q.o[q.a]}</div></div>`).join('')||'<p class="mu">No matches.</p>'}
+function cards(){const p=pool();if(!p.length)return alert('Select at least one week.');deck=p;di=0;shown=false;show('fcs');fd()}
+function fd(){const q=deck[di];$('fc').innerHTML=shown?`<div><div class="good" style="font-weight:700">${q.o[q.a]}</div><div class="mu" style="font-size:.9rem;margin-top:8px">${WK[q.w-1]}</div></div>`:q.q;$('fn').textContent=`Card ${di+1} of ${deck.length}`}
+function flip(){shown=!shown;fd()}function fm(d){di=(di+d+deck.length)%deck.length;shown=false;fd()}
+dash();sr();
+</script></body></html>
